@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Sistema Escolar</title>
+<meta charset="UTF-8" />
+<meta Nombre="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="css/bootstrap.min.css" />
+<link rel="stylesheet" href="css/bootstrap-responsive.min.css" />
+<link rel="stylesheet" href="css/fullcalendar.css" />
+<link rel="stylesheet" href="css/matrix-style.css" />
+<link rel="stylesheet" href="css/matrix-media.css" />
+<link href="font-awesome/css/font-awesome.css" rel="stylesheet" />
+<link rel="stylesheet" href="css/jquery.gritter.css" />
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,800' rel='stylesheet' type='text/css'>
+</head>
+<body>
+
+<!--Header-part-->
+<div id="header">
+  <h1><a href="dashboard.html">Sistema Escolar</a></h1>
+</div>
+<!--close-Header-part--> 
+
+
+<!--top-Header-menu-->
+<div id="user-nav" class="navbar navbar-inverse">
+</div>
+<!--close-top-Header-menu-->
+<!--start-top-serch-->
+<div id="search">
+  <input type="text" placeholder="Busque aquí..."/>
+  <button type="submit" class="tip-bottom" title="Search"><i class="icon-search icon-white"></i></button>
+</div>
+<!--close-top-serch-->
+<!--sidebar-menu-->
+<div id="sidebar"><a href="#" class="visible-phone"><i class="icon icon-book"></i> Asignaturas</a>
+  <ul>
+    <li> <a href="index.html"><i class="icon icon-home"></i> <span>Dashboard</span></a> </li>
+    <li class="active"><a href="Asignaturas_list.html"><i class="icon icon-book"></i> <span>Asignaturas</span></a> </li>
+    <li> <a href="Notas_list.html"><i class="icon icon-user"></i> <span>Estudiantes</span></a> </li>
+	<li class=""><a title="" href="login.html"><i class="icon icon-share-alt"></i> <span class="text">Cerrar seción</span></a></li>
+  </ul>
+</div>
+<!--
+<!--sidebar-menu-->
+
+<!--main-container-part-->
+<div id="content">
+  <div id="content-header">
+    <div id="breadcrumb"> <a href="#" title="Go to Home" class="tip-bottom"><i class="icon-home"></i> Dashboard</a> <a href="#" class="current">Asignaturas</a> </div>
+    <h1>Asignaturas</h1>
+  </div>
+  <div class="container-fluid">
+      <div class="span12">
+	  <div class="widget-box">
+          <div class="widget-content nopadding">
+            <form action="javascript:void(0);" method="POST" onsubmit="app.Add()"> 
+			 <input type="text" id="add-Nombre" placeholder="Nueva Asignatura">
+			 <input type="text" id="add-Alumnos" placeholder="Cantidad de usuarios">
+			 <input type="submit" value="Add">
+			</form>
+			
+			<div id="spoiler" role="aria-hidden">
+			   <form action="javascript:void(0);" method="POST" id="saveEdit">
+			     <input type="text" id="edit-Nombre">
+			     <input type="submit" value="Edit" /> <a onclick="CloseInput()" aria-label="Close">&#10006;</a>
+			   </form>
+			   </div>
+
+<p id="counter"></p>
+
+<table class="table table-bordered data-table">
+  <tr>
+    <th>Nombre</th>
+  </tr>
+    <tbody id="Asignatura">
+    </tbody>
+</table>
+          </div>
+		</div>
+      </div>
+  </div>  
+</div>
+<!--end-main-container-part-->
+
+<!--Footer-part-->
+
+<div class="row-fluid">
+  <div id="footer" class="span12"> Jean Paul Linares | Aristides Morcillo | Jonellys De Gracia</div>
+</div>
+
+<!--end-Footer-part-->
+
+<script>
+var app = new function() {
+  this.el = document.getElementById('Asignatura');
+  this.Asignatura = ['France', 'Germany', 'England', 'Spain', 'Belgium', 'Italy', 'Portugal', 'Irland', 'Luxembourg'];
+  this.Count = function(data) {
+    var el   = document.getElementById('counter');
+    var Nombre = 'country';
+    if (data) {
+      if (data > 1) {
+        Nombre = 'Asignatura';
+      }
+      el.innerHTML = data + ' ' + Nombre ;
+    } else {
+      el.innerHTML = 'No ' + Nombre;
+    }
+  };
+  
+  this.FetchAll = function() {
+    var data = '';
+    if (this.Asignatura.length > 0) {
+      for (i = 0; i < this.Asignatura.length; i++) {
+        data += '<tr>';
+        data += '<td>' + this.Asignatura[i] + '</td>';
+        data += '<td><button onclick="app.Edit(' + i + ')">Edit</button></td>';
+        data += '<td><button onclick="app.Delete(' + i + ')">Delete</button></td>';
+        data += '</tr>';
+      }
+    }
+    this.Count(this.Asignatura.length);
+    return this.el.innerHTML = data;
+  };
+  this.Add = function () {
+    el = document.getElementById('add-Nombre');
+    // Get the value
+    var country = el.value;
+    if (country) {
+      // Add the new value
+      this.Asignatura.push(country.trim());
+      // Reset input value
+      el.value = '';
+      // Dislay the new list
+      this.FetchAll();
+    }
+  };
+  this.Edit = function (item) {
+    var el = document.getElementById('edit-Nombre');
+    // Display value in the field
+    el.value = this.Asignatura[item];
+    // Display fields
+    document.getElementById('spoiler').style.display = 'block';
+    self = this;
+    document.getElementById('saveEdit').onsubmit = function() {
+      // Get value
+      var country = el.value;
+      if (country) {
+        // Edit value
+        self.Asignatura.splice(item, 1, country.trim());
+        // Display the new list
+        self.FetchAll();
+        // Hide fields
+        CloseInput();
+      }
+    }
+  };
+  this.Delete = function (item) {
+    // Delete the current row
+    this.Asignatura.splice(item, 1);
+    // Display the new list
+    this.FetchAll();
+  };
+  
+}
+app.FetchAll();
+function CloseInput() {
+  document.getElementById('spoiler').style.display = 'none';
+}
+</script>
+<script src="js/excanvas.min.js"></script> 
+<script src="js/jquery.min.js"></script> 
+<script src="js/jquery.ui.custom.js"></script> 
+<script src="js/bootstrap.min.js"></script> 
+<script src="js/jquery.flot.min.js"></script> 
+<script src="js/jquery.flot.resize.min.js"></script> 
+<script src="js/jquery.peity.min.js"></script> 
+<script src="js/fullcalendar.min.js"></script> 
+<script src="js/matrix.js"></script> 
+<script src="js/matrix.dashboard.js"></script> 
+<script src="js/jquery.gritter.min.js"></script> 
+<script src="js/matrix.interface.js"></script> 
+<script src="js/matrix.chat.js"></script> 
+<script src="js/jquery.validate.js"></script> 
+<script src="js/matrix.form_validation.js"></script> 
+<script src="js/jquery.wizard.js"></script> 
+<script src="js/jquery.uniform.js"></script> 
+<script src="js/select2.min.js"></script> 
+<script src="js/matrix.popover.js"></script> 
+<script src="js/jquery.dataTables.min.js"></script> 
+<script src="js/matrix.tables.js"></script> 
+
+<script type="text/javascript">
+  // This function is called from the pop-up menus to transfer to
+  // a different page. Ignore if the value returned is a null string:
+  function goPage (newURL) {
+
+      // if url is empty, skip the menu dividers and reset the menu selection to default
+      if (newURL != "") {
+      
+          // if url is "-", it is this page -- reset the menu:
+          if (newURL == "-" ) {
+              resetMenu();            
+          } 
+          // else, send page to designated URL            
+          else {  
+            document.location.href = newURL;
+          }
+      }
+  }
+
+// resets the menu selection upon entry to this page:
+function resetMenu() {
+   document.gomenu.selector.selectedIndex = 2;
+}
+</script>
+</body>
+</html>
