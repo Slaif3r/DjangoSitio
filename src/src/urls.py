@@ -1,9 +1,9 @@
 from django.conf.urls import url
 from django.contrib import admin
-from semestral.views import (HomeView, ContactsView)
+from apps.semestral.views import (LoginView)
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^index/', HomeView.as_view()),
-    url(r'^index/contacts/$', ContactsView.as_view()),
+    url(r'^$', LoginView.as_view()),
+    #url(r'^index/contacts/$', ContactsView.as_view()),
 
 ]
